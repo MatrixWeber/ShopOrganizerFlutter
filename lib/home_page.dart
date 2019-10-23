@@ -126,8 +126,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _decideImageView() {
-    return Container(
-        child: _image == null ? _ifImageNotSet() : _ifImageWasSet());
+    return _image == null ? _ifImageNotSet() : _ifImageWasSet();
   }
 
   @override
@@ -143,13 +142,9 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: GestureDetector(
-        onTap: () => _showChoiseDialog(context),
-        child: Container(
-          padding: EdgeInsets.all(8.0),
-          constraints: BoxConstraints.expand(),
-          decoration: BoxDecoration(
-              border: Border.all(width: 2.0, color: const Color(0xFFFFFFFF))),
+      body: Container(
+        padding: EdgeInsets.all(8.0),
+        constraints: BoxConstraints.expand(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -162,7 +157,10 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: EdgeInsets.all(8.0),
               ),
-              _decideImageView(),
+              GestureDetector(
+                onTap: () => _showChoiseDialog(context),
+                child: _decideImageView(),
+              ),
               Padding(
                 padding: EdgeInsets.all(8.0),
               ),
@@ -184,7 +182,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             ],
-          ),
         ),
       ),
     );
