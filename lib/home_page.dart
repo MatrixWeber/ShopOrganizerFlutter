@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   static const _RADIUS = 120.0;
   var _email = 'Email';
   var _name = 'Name';
+  var _phone = 'Phone';
 
   Future<void> _signOut(BuildContext context) async {
     try {
@@ -50,6 +51,27 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       _image = image;
+    });
+  }
+
+_getNameFromText(name)
+  {
+    setState(() {
+      _name = name;
+    });
+  }
+
+_getEmailFromText(email)
+  {
+    setState(() {
+      _email = email;
+    });
+  }
+
+  _getPhoneFromText(phone)
+  {
+    setState(() {
+      _phone = phone;
     });
   }
 
@@ -172,6 +194,7 @@ class _HomePageState extends State<HomePage> {
             ),
             TextField(
               obscureText: true,
+              onSubmitted: (name) => _getNameFromText(name),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: _name,
@@ -182,11 +205,23 @@ class _HomePageState extends State<HomePage> {
             ),
             TextField(
               obscureText: true,
+              onSubmitted: (email) => _getEmailFromText(email),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: _email,
               ),
-            )
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            TextField(
+              obscureText: true,
+              onSubmitted: (phone) => _getPhoneFromText(phone),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: _phone,
+              ),
+            ),
           ],
         ),
       ),
