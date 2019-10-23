@@ -31,12 +31,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  _getEmail() {
+    FirebaseAuth.instance.currentUser().then((currentUser) => {
+          setState(() {
+            _email = currentUser.email.toString();
+          })
+        });
+  }
+
   @override
-  void initState() {
-    super.initState();
-    FirebaseAuth.instance
-        .currentUser()
-        .then((currentUser) => {_email = currentUser.email.toString()});
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getEmail();
   }
 
   Future getImage() async {
@@ -145,43 +151,43 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         padding: EdgeInsets.all(8.0),
         constraints: BoxConstraints.expand(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text('Your Profile',
-                  style: textStyle(
-                    fontSize: 24.0,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-              ),
-              GestureDetector(
-                onTap: () => _showChoiseDialog(context),
-                child: _decideImageView(),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-              ),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: _name,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text('Your Profile',
+                style: textStyle(
+                  fontSize: 24.0,
+                  color: Colors.black,
                 ),
+                textAlign: TextAlign.center),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            GestureDetector(
+              onTap: () => _showChoiseDialog(context),
+              child: _decideImageView(),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: _name,
               ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: _email,
               ),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: _email,
-                ),
-              )
-            ],
+            )
+          ],
         ),
       ),
     );
