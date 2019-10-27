@@ -3,10 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shop_organizer/entities/user.dart';
 // import 'package:image_picker_ui/image_picker_handler.dart';
 import 'package:shop_organizer/firebase/auth.dart';
 import 'firebase/auth_provider.dart';
 import 'custom_functions.dart';
+import 'firebase/cloud.dart';
+import 'firebase/cloud_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({this.onSignedOut});
@@ -16,11 +19,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   File _image;
   static const _RADIUS = 120.0;
-  var _email = 'Email';
-  var _name = 'Name';
-  var _phone = 'Phone';
+  static const _PADDING = 6.0;
+  static const _TF_EDGE = 12.0;
+  static const _TF_SIZE = 20.0;
+  String _email = 'Email';
+  String _name = 'Name';
+  String _firstName = 'First Name';
+  int _phone = 0123456789;
+
+  TextEditingController _nameInputController;
+  TextEditingController _firstNameInputController;
+  TextEditingController _emailInputController;
+  TextEditingController _phoneInputController;
 
   Future<void> _signOut(BuildContext context) async {
     try {
@@ -36,6 +49,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseAuth.instance.currentUser().then((currentUser) => {
           setState(() {
             _email = currentUser.email.toString();
+            _emailInputController.text = _email;
           })
         });
   }
@@ -46,6 +60,18 @@ class _HomePageState extends State<HomePage> {
     _getEmail();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _nameInputController = TextEditingController();
+    _nameInputController.text = _name;
+    _firstNameInputController = TextEditingController();
+    _firstNameInputController.text = _firstName;
+    _emailInputController = TextEditingController();
+    _phoneInputController = TextEditingController();
+    _phoneInputController.text = _phone.toString();
+  }
+
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
@@ -54,25 +80,51 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-_getNameFromText(name)
-  {
+  _getNameFromText(name) {
     setState(() {
       _name = name;
     });
   }
 
-_getEmailFromText(email)
-  {
+  _getFirstNameFromText(firstName) {
+    setState(() {
+      _firstName = firstName;
+    });
+  }
+
+  _getEmailFromText(email) {
     setState(() {
       _email = email;
     });
   }
 
-  _getPhoneFromText(phone)
-  {
+  _getPhoneFromText(phone) {
     setState(() {
       _phone = phone;
     });
+  }
+
+  Future<void> _storeInDatabase() async {
+    var _user = User()
+      ..name = _name
+      ..firstName = _firstName
+      ..email = _email
+      ..phone = _phone
+      ..isAdmin = false
+      ..isClient = false
+      ..imageUrl = 'none';
+    try {
+      //final BaseCloud cloud = CloudProvider.of(context).cloud;
+      Cloud cloud = Cloud();
+      await cloud.add('users', _user.getMap());
+      print('Signed in: ' + _user.name);
+    } catch (e) {
+      print('Error: $e');
+      _scaffoldState.currentState.showSnackBar(SnackBar(
+        content: Text(e.toString()),
+        duration: Duration(seconds: 10),
+      ));
+    }
   }
 
   _openFotoSource(BuildContext context, ImageSource source) async {
@@ -160,6 +212,7 @@ _getEmailFromText(email)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldState,
       appBar: AppBar(
         title: Text('Welcome'),
         actions: <Widget>[
@@ -170,59 +223,89 @@ _getEmailFromText(email)
           )
         ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        constraints: BoxConstraints.expand(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text('Your Profile',
-                style: textStyle(
-                  fontSize: 24.0,
-                  color: Colors.black,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text('Your Profile',
+                  style: textStyle(
+                    fontSize: 24.0,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center),
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
+              ),
+              GestureDetector(
+                onTap: () => _showChoiseDialog(context),
+                child: _decideImageView(),
+              ),
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
+              ),
+              TextField(
+                onSubmitted: (firstName) => _getFirstNameFromText(firstName),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(_TF_EDGE),
+                  border: OutlineInputBorder(),
+                  labelText: 'First Name',
                 ),
-                textAlign: TextAlign.center),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            GestureDetector(
-              onTap: () => _showChoiseDialog(context),
-              child: _decideImageView(),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            TextField(
-              obscureText: true,
-              onSubmitted: (name) => _getNameFromText(name),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: _name,
+                controller: _firstNameInputController,
+                style: TextStyle(fontSize: _TF_SIZE),
+                keyboardType: TextInputType.text,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            TextField(
-              obscureText: true,
-              onSubmitted: (email) => _getEmailFromText(email),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: _email,
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            TextField(
-              obscureText: true,
-              onSubmitted: (phone) => _getPhoneFromText(phone),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: _phone,
+              TextField(
+                onSubmitted: (name) => _getNameFromText(name),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(_TF_EDGE),
+                  border: OutlineInputBorder(),
+                  labelText: 'Name',
+                ),
+                controller: _nameInputController,
+                style: TextStyle(fontSize: _TF_SIZE),
+                keyboardType: TextInputType.text,
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
+              ),
+              TextField(
+                onSubmitted: (email) => _getEmailFromText(email),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(_TF_EDGE),
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                ),
+                controller: _emailInputController,
+                style: TextStyle(fontSize: _TF_SIZE),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
+              ),
+              TextField(
+                onSubmitted: (phone) => _getPhoneFromText(phone),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(_TF_EDGE),
+                  border: OutlineInputBorder(),
+                  labelText: 'Phone',
+                ),
+                controller: _phoneInputController,
+                style: TextStyle(fontSize: _TF_SIZE),
+                keyboardType: TextInputType.phone,
+              ),
+              Padding(
+                padding: EdgeInsets.all(_PADDING),
+              ),
+              RaisedButton(
+                  child: Text('Next', style: TextStyle(fontSize: _TF_SIZE)),
+                  onPressed: _storeInDatabase),
+            ],
+          ),
         ),
       ),
     );

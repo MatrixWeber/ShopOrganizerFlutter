@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:shop_organizer/firebase/auth.dart';
 import 'package:shop_organizer/firebase/auth_provider.dart';
 
-class EmailFieldValidator {
-  static String validate(String value) {
-    return value.isEmpty ? 'Email can\'t be empty' : null;
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Email format is invalid';
+    } else {
+      return null;
+    }
   }
-}
 
-class PasswordFieldValidator {
-  static String validate(String value) {
-    return value.isEmpty ? 'Password can\'t be empty' : null;
+  String pwdValidator(String value) {
+    if (value.length < 8) {
+      return 'Password must be longer than 8 characters';
+    } else {
+      return null;
+    }
   }
-}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({this.onSignedIn});
@@ -109,14 +116,14 @@ class _LoginPageState extends State<LoginPage> {
       TextFormField(
         key: Key('email'),
         decoration: InputDecoration(labelText: 'Email'),
-        validator: EmailFieldValidator.validate,
+        validator: emailValidator,
         onSaved: (String value) => _email = value,
       ),
       TextFormField(
         key: Key('password'),
         decoration: InputDecoration(labelText: 'Password'),
         obscureText: true,
-        validator: PasswordFieldValidator.validate,
+        validator: pwdValidator,
         onSaved: (String value) => _password = value,
       ),
     ];

@@ -6,25 +6,25 @@ void main() {
 
   test('empty email returns error string', () {
 
-    final result = EmailFieldValidator.validate('');
+    final result = emailValidator('');
     expect(result, 'Email can\'t be empty');
   });
 
   test('non-empty email returns null', () {
 
-    final result = EmailFieldValidator.validate('email');
+    final result = emailValidator('email');
     expect(result, null);
   });
 
   test('empty password returns error string', () {
 
-    final result = PasswordFieldValidator.validate('');
+    final result = pwdValidator('');
     expect(result, 'Password can\'t be empty');
   });
 
   test('non-empty password returns null', () {
 
-    final result = PasswordFieldValidator.validate('password');
+    final result = pwdValidator('password');
     expect(result, null);
   });
 }

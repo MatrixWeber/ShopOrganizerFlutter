@@ -1,6 +1,7 @@
 import 'address.dart';
 
 class Shop {
+  String id;
   int shopId = 0;
   String shopKeeper = 'Max';
   String name = 'MyShopName'; 
@@ -11,4 +12,34 @@ class Shop {
   int numOfWorker = 3;
   Address address;
   String imageUrl = 'uml_to_image';
+  String shopArt = 'barber';
+
+  Shop({
+    this.id,
+    this.name,
+    this.shopKeeper,
+    this.email,
+    this.phone,
+    this.workingDays,
+    this.workingHours,
+    this.imageUrl,
+    this.numOfWorker,
+    this.address,
+    this.shopArt,
+  });
+
+  Shop.fromMap(Map<String, dynamic> data, String id)
+    : this(
+        id : id,
+        shopKeeper: data['shopKeeper'],
+        name: data['name'],
+        email: data['email'],
+        phone: data['phone'],
+        workingDays: data['workingDays'],
+        workingHours: data['workingHours'],
+        imageUrl: data['imageUrl'],
+        numOfWorker: data['numOfWorker'],
+        address: data['address'],
+        shopArt: data['shopArt'],
+      );
 }
