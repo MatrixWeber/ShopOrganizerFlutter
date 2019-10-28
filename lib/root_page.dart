@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_organizer/firebase/auth.dart';
-import 'package:shop_organizer/home_page.dart';
+import 'package:shop_organizer/user_profile.dart';
 import 'package:shop_organizer/login_page.dart';
 import 'package:shop_organizer/firebase/auth_provider.dart';
 
@@ -51,7 +51,7 @@ class _RootPageState extends State<RootPage> {
           onSignedIn: _signedIn,
         );
       case AuthStatus.signedIn:
-        return HomePage(
+        return UserProfile(
           onSignedOut: _signedOut,
         );
     }

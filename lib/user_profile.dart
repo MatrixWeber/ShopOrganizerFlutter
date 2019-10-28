@@ -11,14 +11,14 @@ import 'custom_functions.dart';
 import 'firebase/cloud.dart';
 import 'firebase/cloud_provider.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({this.onSignedOut});
+class UserProfile extends StatefulWidget {
+  const UserProfile({this.onSignedOut});
   final VoidCallback onSignedOut;
 
-  _HomePageState createState() => _HomePageState();
+  _UserProfileState createState() => _UserProfileState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _UserProfileState extends State<UserProfile> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   File _image;
   static const _RADIUS = 120.0;
@@ -80,31 +80,15 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  _getNameFromText(name) {
-    setState(() {
-      _name = name;
-    });
-  }
-
-  _getFirstNameFromText(firstName) {
-    setState(() {
-      _firstName = firstName;
-    });
-  }
-
-  _getEmailFromText(email) {
-    setState(() {
-      _email = email;
-    });
-  }
-
-  _getPhoneFromText(phone) {
-    setState(() {
-      _phone = phone;
-    });
+  _setPropertiesFromTextController() {
+      _name = _nameInputController.text;
+      _firstName = _firstNameInputController.text;
+      _email = _emailInputController.text;
+      _phone = int.parse(_phoneInputController.text);
   }
 
   Future<void> _storeInDatabase() async {
+    _setPropertiesFromTextController();
     var _user = User()
       ..name = _name
       ..firstName = _firstName
@@ -246,7 +230,6 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(_PADDING),
               ),
               TextField(
-                onSubmitted: (firstName) => _getFirstNameFromText(firstName),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(_TF_EDGE),
                   border: OutlineInputBorder(),
@@ -260,7 +243,6 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(_PADDING),
               ),
               TextField(
-                onSubmitted: (name) => _getNameFromText(name),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(_TF_EDGE),
                   border: OutlineInputBorder(),
@@ -274,7 +256,6 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(_PADDING),
               ),
               TextField(
-                onSubmitted: (email) => _getEmailFromText(email),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(_TF_EDGE),
                   border: OutlineInputBorder(),
@@ -288,7 +269,6 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(_PADDING),
               ),
               TextField(
-                onSubmitted: (phone) => _getPhoneFromText(phone),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(_TF_EDGE),
                   border: OutlineInputBorder(),
