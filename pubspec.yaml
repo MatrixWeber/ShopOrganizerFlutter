@@ -7,6 +7,8 @@ dependencies:
   firebase_auth: ^0.11.1
   image_picker:
   cloud_firestore: ^0.12.9+5
+  firebase_storage: ^3.0.6
+  path_provider: ^1.4.0
   #image_picker_ui: ^0.2.0
   #fluttertoast: 3.0.4
 

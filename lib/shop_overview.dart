@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shop_organizer/entities/user.dart';
 // import 'package:image_picker_ui/image_picker_handler.dart';
 import 'package:shop_organizer/firebase/auth.dart';
-import 'package:shop_organizer/shop_overview.dart';
 import 'firebase/auth_provider.dart';
 import 'custom_functions.dart';
 import 'firebase/cloud.dart';
@@ -14,14 +13,14 @@ import 'firebase/store.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({this.onSignedOut});
+class ShopOverview extends StatefulWidget {
+  const ShopOverview({this.onSignedOut});
   final VoidCallback onSignedOut;
 
-  _UserProfileState createState() => _UserProfileState();
+  _ShopOverviewState createState() => _ShopOverviewState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _ShopOverviewState extends State<ShopOverview> {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   static final String _myAvatar = 'my_great_logo.png';
   static const _RADIUS = 120.0;
@@ -103,7 +102,6 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _storeInDatabase() async {
-    _showWaitSnackBar();
     _setPropertiesFromTextController();
     if (_image == null) {
       _image = await getImageFileFromAssets(_myAvatar);
@@ -135,10 +133,7 @@ class _UserProfileState extends State<UserProfile> {
       Store store = Store();
       await store.uploadFile(_userCollectionName, uid, _image);
       print('Uploaded image to user: ' + uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ShopOverview()),
-      );
+      Navigator.of(context).pushNamed("/shop_overview");
     } catch (e) {
       print('Error: $e');
       _scaffoldState.currentState.showSnackBar(SnackBar(
@@ -146,7 +141,6 @@ class _UserProfileState extends State<UserProfile> {
         duration: Duration(seconds: 10),
       ));
     }
-    _removeWaitSnackBar();
   }
 
   _openFotoSource(BuildContext context, ImageSource source) async {
@@ -159,18 +153,14 @@ class _UserProfileState extends State<UserProfile> {
 
   void _showWaitSnackBar() {
     _scaffoldState.currentState.showSnackBar(SnackBar(
-      duration: Duration(days: 4),
+      duration: new Duration(seconds: 4),
       content: Row(
         children: <Widget>[
-          CircularProgressIndicator(),
-          Text("  Signing-In...")
+          new CircularProgressIndicator(),
+          new Text("  Signing-In...")
         ],
       ),
     ));
-  }
-
-  void _removeWaitSnackBar() {
-    _scaffoldState.currentState.removeCurrentSnackBar();
   }
 
   Future<void> _showChoiseDialog(BuildContext context) {

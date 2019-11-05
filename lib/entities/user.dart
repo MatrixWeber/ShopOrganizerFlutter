@@ -6,6 +6,7 @@ class User {
   bool isAdmin = false;
   bool isClient = false;
   String imageUrl = 'uml_to_image';
+  String uid = 'uid';
 
   User({
     this.name,
@@ -15,6 +16,7 @@ class User {
     this.isAdmin,
     this.isClient,
     this.imageUrl,
+    this.uid,
   });
 
   User.fromMap(Map<String, dynamic> data)
@@ -26,6 +28,7 @@ class User {
           isAdmin: data['isAdmin'],
           isClient: data['isClient'],
           imageUrl: data['imageUrl'],
+          uid: data['uid'],
         );
 
   Map<String, dynamic> getMap() {
@@ -37,7 +40,8 @@ class User {
         'phone': phone,
         'isAdmin': isAdmin,
         'isClient': isClient,
-        'imageUrl': imageUrl
+        'imageUrl': imageUrl,
+        'uid': uid,
       };
     return map;
   }
